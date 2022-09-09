@@ -2,20 +2,22 @@ import XCTest
 @testable import PassIssuingKit
 
 final class PassIssuingKitTests: XCTestCase {
-    func testSigning() throws {
-		let signingConfig = try SigningConfiguration()
+	let signingConfig = try! SigningConfiguration()
 
+    func testSigning() throws {
 		Pass.setWWDRCert(at: signingConfig.wwdrCertLocation)
 
-		let directoryPaths = try FileManager.default.contentsOfDirectory(atPath: signingConfig.resourceLocation.path)
+		let imageDirectory = signingConfig.resourceLocation.appendingPathComponent("Images")
 
-		let resourceLocations = directoryPaths.map { path in
-			signingConfig.resourceLocation.appendingPathComponent(path)
+		let imagePaths = try FileManager.default.contentsOfDirectory(atPath: imageDirectory.path)
+
+		let imageLocations = imagePaths.map { path in
+			imageDirectory.appendingPathComponent(path)
 		}
 
 		let pass = Pass(
 			properties: Self.passProperties,
-			resources: resourceLocations
+			images: imageLocations
 		)
 
 		let encoded = try pass.issue(using: signingConfig.signingCertLocation, password: signingConfig.password)
@@ -32,7 +34,12 @@ final class PassIssuingKitTests: XCTestCase {
 		/// The location of the WWDR cert.
 		var wwdrCertLocation: URL
 		/// The location of the directory containing all the pass's resources.
-		var resourceLocation: URL
+		var resourceLocation: URL {
+			let fileURL = URL(fileURLWithPath: #file)
+			let testDir = fileURL.deletingLastPathComponent()
+			
+			return testDir.appendingPathComponent("Resources")
+		}
 		/// The location to output the pass to. Should be a file ending in .pkpass.
 		var outputLocation: URL
 
@@ -40,7 +47,6 @@ final class PassIssuingKitTests: XCTestCase {
 			self.password = try Environment.get(key: "TEST_SIGNING_PASSWORD")
 			self.signingCertLocation = try Environment.get(key: "TEST_SIGNING_CERT")
 			self.wwdrCertLocation = try Environment.get(key: "TEST_WWDR_CERT")
-			self.resourceLocation = try Environment.get(key: "TEST_RESOURCES")
 			self.outputLocation = try Environment.get(key: "TEST_OUTPUT")
 		}
 	}

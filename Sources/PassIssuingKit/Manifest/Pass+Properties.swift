@@ -2,7 +2,7 @@ import Foundation
 
 extension Pass {
 	/// The manifest of the pass.
-	public struct Properties: Codable {
+	public struct Properties: Codable, Equatable {
 		/// The Pass format version. Should be 1.
 		public var formatVersion: Int = 1
 		/// The reverse-DNS pass identifier.

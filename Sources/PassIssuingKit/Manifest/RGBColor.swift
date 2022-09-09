@@ -1,7 +1,7 @@
 import Foundation
 
 /// A struct containing an RGB color.
-public struct RGBColor {
+public struct RGBColor: Equatable {
 	/// 0-1, the red value for the color.
 	var red: Double
 	/// 0-1, the blue value for the color.
@@ -50,15 +50,16 @@ extension RGBColor: LosslessStringConvertible, Codable {
 
 		guard
 			let redComponent = Int(trimmedComponents[0]),
-			let blueComponent = Int(trimmedComponents[1]),
-			let greenComponent = Int(trimmedComponents[2])
+			let greenComponent = Int(trimmedComponents[1]),
+			let blueComponent = Int(trimmedComponents[2])
 		else {
 			return nil
 		}
 
 		self.red = Double(redComponent) / 255
-		self.blue = Double(blueComponent) / 255
 		self.green = Double(greenComponent) / 255
+		self.blue = Double(blueComponent) / 255
+		return
 	}
 
 	public enum HexInitializationError: Error {
@@ -72,8 +73,9 @@ extension RGBColor: LosslessStringConvertible, Codable {
 			self = rgb
 		} else if let hex = RGBColor(hex: description) {
 			self = hex
+		} else {
+			return nil
 		}
-		return nil
 	}
 
 	/// The description as an RGB-format string.
@@ -88,7 +90,9 @@ extension RGBColor: LosslessStringConvertible, Codable {
 	public init(from decoder: Decoder) throws {
 		let container = try decoder.singleValueContainer()
 
-		guard let result = RGBColor(try container.decode(String.self)) else {
+		let stringValue = try container.decode(String.self)
+		
+		guard let result = RGBColor(stringValue) else {
 			throw DecodingError.dataCorrupted(.init(codingPath: [], debugDescription: "Not valid RGB values."))
 		}
 

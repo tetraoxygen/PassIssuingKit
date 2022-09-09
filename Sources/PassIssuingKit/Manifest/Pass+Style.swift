@@ -2,7 +2,7 @@ import Foundation
 
 public extension Pass {
 	/// The various pass styles supported by Wallet.
-	enum Style: CodingKey {
+	enum Style: CodingKey, Equatable {
 		/// A Wallet pass styled as a boarding pass.
 		case boardingPass
 		/// A Wallet pass styled as a coupon.
@@ -16,7 +16,7 @@ public extension Pass {
 	}
 
 	/// The various pass styles supported by Wallet, containing a body.
-	enum StyledBody: Codable {
+	enum StyledBody: Codable, Equatable {
 		/// A Wallet pass styled as a boarding pass.
 		case boardingPass(body: Body)
 		/// A Wallet pass styled as a coupon.
@@ -59,56 +59,20 @@ public extension Pass {
 			}
 		}
 
-		public enum CodingKeys: CodingKey {
-			case boardingPass
-			case coupon
-			case eventTicket
-			case storeCard
-			case generic
-		}
-
-		enum BoardingPassCodingKeys: CodingKey {
-			case body
-		}
-
-		enum CouponCodingKeys: CodingKey {
-			case body
-		}
-
-		enum EventTicketCodingKeys: CodingKey {
-			case body
-		}
-
-		enum StoreCardCodingKeys: CodingKey {
-			case body
-		}
-
-		enum GenericCodingKeys: CodingKey {
-			case body
-		}
-
 		public init(from decoder: Decoder) throws {
-			let container = try decoder.container(keyedBy: Pass.StyledBody.CodingKeys.self)
-			var allKeys = ArraySlice(container.allKeys)
-			guard let onlyKey = allKeys.popFirst(), allKeys.isEmpty else {
-				throw DecodingError.typeMismatch(Pass.StyledBody.self, DecodingError.Context.init(codingPath: container.codingPath, debugDescription: "Invalid number of keys found, expected one.", underlyingError: nil))
-			}
-			switch onlyKey {
-				case .boardingPass:
-					let body = try Pass.Body(from: decoder)
-					self = Pass.StyledBody.boardingPass(body: body)
-				case .coupon:
-					let body = try Pass.Body(from: decoder)
-					self = Pass.StyledBody.eventTicket(body: body)
-				case .eventTicket:
-					let body = try Pass.Body(from: decoder)
-					self = Pass.StyledBody.eventTicket(body: body)
-				case .storeCard:
-					let body = try Pass.Body(from: decoder)
-					self = Pass.StyledBody.storeCard(body: body)
-				case .generic:
-					let body = try Pass.Body(from: decoder)
-					self = Pass.StyledBody.generic(body: body)
+			let container = try decoder.container(keyedBy: Style.self)
+
+			if let body = try? container.decodeIfPresent(Body.self, forKey: .boardingPass) {
+				self = .boardingPass(body: body)
+			} else if let body = try? container.decodeIfPresent(Body.self, forKey: .coupon) {
+				self = .coupon(body: body)
+			} else if let body = try? container.decodeIfPresent(Body.self, forKey: .eventTicket) {
+				self = .eventTicket(body: body)
+			} else if let body = try? container.decodeIfPresent(Body.self, forKey: .storeCard) {
+				self = .storeCard(body: body)
+			} else {
+				let body = try container.decode(Body.self, forKey: .generic)
+				self = .generic(body: body)
 			}
 		}
 

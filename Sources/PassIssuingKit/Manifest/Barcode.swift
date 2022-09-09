@@ -1,7 +1,7 @@
 import Foundation
 
 /// A struct representing a barcode object.
-public struct Barcode: Codable {
+public struct Barcode: Codable, Equatable {
 	/// The message to encode.
 	public var message: String
 	/// The format in which to encode it.

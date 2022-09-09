@@ -22,9 +22,9 @@ public extension Pass {
 			throw IssuingError.invalidPassData
 		}
 
-		for resource in resources {
-			guard passEncoder.addFile(from: resource) else {
-				throw IssuingError.couldntAddFile(path: resource.lastPathComponent)
+		for image in images {
+			guard passEncoder.addFile(from: image) else {
+				throw IssuingError.couldntAddFile(path: image.path)
 			}
 		}
 

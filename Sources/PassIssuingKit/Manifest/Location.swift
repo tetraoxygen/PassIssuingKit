@@ -1,7 +1,7 @@
 import Foundation
 
 /// A struct representing a geographical location.
-public struct Location: Codable {
+public struct Location: Codable, Equatable {
 	/// The longitude of the location.
 	public var longitude: Double
 	/// The latitude of the location.
