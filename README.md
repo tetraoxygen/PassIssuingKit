@@ -7,7 +7,7 @@ A quick and simple Apple Wallet pass issuing library for Swift.
 
 Add the following line to your dependencies in `Package.swift`:
 ```
-.package(url: "https://github.com/tetraoxygen/PassIssuingKit.git", from: "1.0.0")
+.package(url: "https://github.com/tetraoxygen/PassIssuingKit.git", branch: "main")
 ```
 
 ## Usage
