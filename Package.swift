@@ -16,7 +16,7 @@ let package = Package(
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
-		.package(url: "https://github.com/aydenp/PassEncoder.git", branch: "master")
+		.package(url: "https://github.com/aydenp/PassEncoder.git", revision: "edef6e1620d1f4c2a269a5edf467e0d4f123b68f")
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
