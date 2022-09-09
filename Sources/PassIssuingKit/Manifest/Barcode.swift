@@ -20,4 +20,10 @@ public struct Barcode: Codable, Equatable {
 		/// A Code 128 format barcode. **Note: does not work on Apple Watch.**
 		case code128 = "PKBarcodeFormatCode128"
 	}
+
+	public init(message: String, format: BarcodeFormat, messageEncoding: String) {
+		self.message = message
+		self.format = format
+		self.messageEncoding = messageEncoding
+	}
 }
