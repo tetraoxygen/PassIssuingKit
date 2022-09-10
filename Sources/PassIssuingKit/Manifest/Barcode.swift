@@ -21,7 +21,7 @@ public struct Barcode: Codable, Equatable {
 		case code128 = "PKBarcodeFormatCode128"
 	}
 
-	public init(message: String, format: BarcodeFormat, messageEncoding: String) {
+	public init(message: String, format: BarcodeFormat, messageEncoding: String = "utf-8") {
 		self.message = message
 		self.format = format
 		self.messageEncoding = messageEncoding
